@@ -48,21 +48,19 @@ class MyOddsBot:
         Checks if a proxy is used
         :return: None
         """
-        if self._config['proxy']['enabled']:
-            try:
-                self.scraper._get_browser_page()
-            except:
-                logger.warning('Could not create browser. Waiting for next iteration')
-                self.scraper._stop_browser()
-                return
+        try:
+            self.scraper._get_browser_page()
+        except:
+            logger.warning('Could not create browser. Waiting for next iteration')
+            self.scraper._stop_browser()
+            return
         for sport, subdivision in SPORTS.items():
             for division, url in subdivision.items():
                 try:
                     self.process(sport, division, url)
                 except:
                     logger.warning(f'Could not process data for {sport}: {division}. Going to next..')
-        if self._config['proxy']['enabled']:
-            self.scraper._stop_browser()
+        self.scraper._stop_browser()
         
 
     def check_sure_bet(self, df: pd.DataFrame) -> None:

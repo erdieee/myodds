@@ -31,14 +31,17 @@ class Scraper:
        
     def _get_browser_page(self) -> None:
         """
-        If a proxy is used it open a browser which stays open until closed 
+        Open a browser which stays open until closed 
         and sets a page that is used for scrolling
         It click on the page such that the location does not appear again
         and the matches can be scraped without problems
         :return: None
         """
         self._p = sync_playwright().start()
-        browser = self._p.firefox.launch(headless=self._config['headless'], proxy={"server": self._config['proxy']['server']})
+        if self._config['proxy']['enabled']:
+            browser = self._p.firefox.launch(headless=self._config['headless'], proxy={"server": self._config['proxy']['server']})
+        else:
+            browser = self._p.firefox.launch(headless=self._config['headless'])
         self._page = browser.new_page()
         self._page.goto(self._config['base_url'])
         self._page.wait_for_load_state('networkidle')
@@ -48,7 +51,7 @@ class Scraper:
     
     def _stop_browser(self) -> None:
         """
-        If a proxy is use it closes the open browser which stayed open
+        Closes the open browser which stayed open
         :return: None
         """
         if self._p is not None:
@@ -60,40 +63,18 @@ class Scraper:
         :param url: Url that needs to bet scraped
         :return: Html of the page
         """
-        if self._config['proxy']['enabled']:
-            page = self._page
-            page.goto(url)
-            for i in range(7):
-                page.mouse.wheel(0, 1000)
-                
-            page.wait_for_load_state('networkidle')
-            try:
-                content = page.content()
-            except:
-                logger.warning(f'Could not retrive html from {url}. Retrying again')
-                self._get_html(url)
-            return content
-
-        
-        with sync_playwright() as p:
-            browser = p.firefox.launch(headless=self._config['headless'])
-            logger.info(browser)
-            page = browser.new_page()
-            page.goto(url)
-            #time.sleep(4)
-            # scroll down the page since not all images are loaded immediately, keep this !!
-            # can still not get all images
-            for i in range(7):
-                page.mouse.wheel(0, 1000)
+        page = self._page
+        page.goto(url)
+        for i in range(7):
+            page.mouse.wheel(0, 1000)
             
-            page.wait_for_load_state('networkidle')
-            try:
-                content = page.content()
-            except:
-                logger.warning(f'Could not retrive html from {url}. Retrying again')
-                self._get_html(url)
+        page.wait_for_load_state('networkidle')
+        try:
+            content = page.content()
+        except:
+            logger.warning(f'Could not retrive html from {url}. Retrying again')
+            self._get_html(url)
         return content
-        
 
     def get_matches(self, sport: str, division: str, url: str) -> pd.DataFrame:
         """
