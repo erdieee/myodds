@@ -15,6 +15,8 @@ SPORTS = {
         'Serie-B': 'https://www.oddschecker.com/it/calcio/italia/serie-b',
         'Champions League': 'https://www.oddschecker.com/it/calcio/coppe-e-amichevoli-per-club/champions-league',
         'Europa League': 'https://www.oddschecker.com/it/calcio/coppe-e-amichevoli-per-club/europa-league',
-        'Premier League': 'https://www.oddschecker.com/it/calcio/inghilterra/premier-league'
+        'Premier League': 'https://www.oddschecker.com/it/calcio/inghilterra/premier-league',
+        'Bundesliga': 'https://www.oddschecker.com/it/calcio/germania/bundesliga',
+        'Liga': 'https://www.oddschecker.com/it/calcio/spagna/liga',
     }
 }
