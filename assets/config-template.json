@@ -1,0 +1,17 @@
+{
+    "min_win_perc": 0.01,
+    "min_bet": 10,        
+    "max_bet": 80,       
+    "check_sure_bet": true,
+    "headless": true,
+    "base_url": "https://www.oddschecker.com/it/",
+    "telegram": {
+        "enabled": false, 
+        "token": "", 
+        "chat_id": "" 
+    },
+    "proxy": {
+        "enabled": false,
+        "server": ""
+    }
+}
