@@ -55,7 +55,6 @@ function updateenv() {
         exit 1
     fi
     source .env/bin/activate
-    export PYTHONPATH="${PYTHONPATH}:${pwd}"
     SYS_ARCH=$(uname -m)
     echo "pip install in-progress. Please wait..."
     ${PYTHON} -m pip install --upgrade pip
@@ -67,7 +66,12 @@ function updateenv() {
         echo "Failed installing dependencies"
         exit 1
     fi
-    echo "pip install completed"
+
+    ${PYTHON} -m pip install -e .
+    if [ $? -ne 0 ]; then
+        echo "Failed installing MyOdds"
+        exit 1
+    fi
 }
 
 function install() {
