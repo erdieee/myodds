@@ -6,8 +6,8 @@ Main myodds script
 import logging
 from datetime import datetime
 
-from myoddsbot import MyOddsBot
 from myodds.constants import REFRESH_TIME_SECONDS
+from myodds.myoddsbot import MyOddsBot
 from myodds.utils import load_config
 
 logger = logging.getLogger('myodds')

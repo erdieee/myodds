@@ -9,6 +9,7 @@ function echo_block() {
 function final_message() {
     echo_block "Run the script !"
     echo "You can now use the script by executing 'source .env/bin/activate; python3 myodds'"
+    echo "Or run the script by executing 'source .env/bin/activate; myodds'"
 }
 
 function install_playwright() {
