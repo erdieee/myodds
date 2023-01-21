@@ -23,11 +23,16 @@ def main() -> None:
 
     myoddsbot.runner()
     time = datetime.now()
+    run_time = datetime.now()
     while True:
         delta = datetime.now() - time
-        if delta.seconds >= REFRESH_TIME_SECONDS:
+        run_delta = datetime.now() - run_time
+        if delta.seconds >= 60:
             logger.info(f'Bot is running')
-            myoddsbot.runner()
+            if run_delta.seconds >= REFRESH_TIME_SECONDS:
+                logger.info('Scraping now..')
+                myoddsbot.runner()
+                run_time = datetime.now()
             time = datetime.now()
 
     

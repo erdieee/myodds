@@ -16,7 +16,7 @@ class BetType(str, Enum):
         # explicitly convert to String to help with exporting data.
         return self.value
 
-REFRESH_TIME_SECONDS = 100
+REFRESH_TIME_SECONDS = 300
 INVEST_AMOUNT_DECIMALS = 1
 
 COLUMNS = ['date', 'play_time', 'sport', 'sport_subdivision', 'data_source', 'team1', 'team2',  \
