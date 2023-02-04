@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class Telegram:
-    """ 
-    This class handles all telegram communication 
+    """
+    This class handles all telegram communication
     """
 
     def __init__(self, config: Dict[str, Any]) -> None:
@@ -23,8 +23,8 @@ class Telegram:
         :return: None
         """
         self._config = config
-        self.token = self._config['telegram']['token']
-        self.chat_id = self._config['telegram']['chat_id']
+        self.token = self._config["telegram"]["token"]
+        self.chat_id = self._config["telegram"]["chat_id"]
         self._updater = Updater(token=self.token, use_context=True)
         self._init()
 
@@ -34,9 +34,9 @@ class Telegram:
         :return: None
         """
         handles = [
-            CommandHandler('start', self._start),
-            CommandHandler('help', self._help),
-            CommandHandler('version', self._version),
+            CommandHandler("start", self._start),
+            CommandHandler("help", self._help),
+            CommandHandler("version", self._version),
         ]
 
         for handle in handles:
@@ -45,10 +45,9 @@ class Telegram:
         self._updater.start_polling()
 
         logger.info(
-            'rpc.telegram is listening for following commands: %s',
-            [h.command for h in handles]
+            "rpc.telegram is listening for following commands: %s",
+            [h.command for h in handles],
         )
-    
 
     def _start(self, update: Update, context: CallbackContext) -> None:
         """
@@ -58,7 +57,7 @@ class Telegram:
         :param update: message update
         :return: None
         """
-        self._send_message('Started bot')
+        self._send_message("Started bot")
 
     def _help(self, update: Update, context: CallbackContext) -> None:
         """
@@ -74,7 +73,7 @@ class Telegram:
             "*/version:* `Show version of the bot`\n"
             "*/help:* `Show this help message`\n"
         )
-        self._send_message(help_msg, parse_mode = ParseMode.MARKDOWN)
+        self._send_message(help_msg, parse_mode=ParseMode.MARKDOWN)
 
     def _version(self, update: Update, context: CallbackContext) -> None:
         """
@@ -84,16 +83,16 @@ class Telegram:
         :param update: message update
         :return: None
         """
-        self._send_message(f'*MyOddsBot version:* {0.1}')
+        self._send_message(f"*MyOddsBot version:* {0.1}")
 
     def compose_sure_bet(self, bet: Dict[str, Any]) -> str:
         """
-        Creates the message for a sure bet 
+        Creates the message for a sure bet
         :param bet: Dictionary that contains all bet details
         :return: Message string
         """
-        bet['emoji'] = self._get_emoji(bet)
-        bet['bet_type'] = str(bet['bet_type']).replace('_', ' ').title()
+        bet["emoji"] = self._get_emoji(bet)
+        bet["bet_type"] = str(bet["bet_type"]).replace("_", " ").title()
 
         message = (
             f"*{bet['bet_type']}* {bet['emoji']} \n"
@@ -133,14 +132,14 @@ class Telegram:
         """
         Gets an emoji for respective bet and for expected win
         :param bet: Dictionary that contains all bet details
-        :return: Emoji as string 
+        :return: Emoji as string
         """
-        if bet['bet_type'] == BetType.SURE_BET:
-            if float(bet['expected_win']) >= 5.0:
-                 return "\N{ROCKET}"
+        if bet["bet_type"] == BetType.SURE_BET:
+            if float(bet["expected_win"]) >= 5.0:
+                return "\N{ROCKET}"
             else:
                 return "\N{WHITE HEAVY CHECK MARK}"
-        if bet['bet_type'] == BetType.POSITIVE_EV_BET:
+        if bet["bet_type"] == BetType.POSITIVE_EV_BET:
             return "\N{BAR CHART}"
 
     def send_message(self, bet: Dict[str, Any], bet_type: BetType) -> None:
@@ -150,14 +149,15 @@ class Telegram:
         :param bet_type: Differenciates between the bet types
         :return: None
         """
-        bet['bet_type'] = str(bet_type)
+        bet["bet_type"] = str(bet_type)
         if bet_type is BetType.SURE_BET:
             msg = self.compose_sure_bet(bet)
         if bet_type is BetType.POSITIVE_EV_BET:
             msg = self.compose_positive_ev_bet(bet)
 
-        self._send_message(msg.replace('_', '')) #replace needed because can't parse underscore
-        
+        self._send_message(
+            msg.replace("_", "")
+        )  # replace needed because can't parse underscore
 
     def _send_message(self, message: str, parse_mode: str = ParseMode.MARKDOWN) -> None:
         """
@@ -169,23 +169,18 @@ class Telegram:
         try:
             try:
                 self._updater.bot.send_message(
-                    chat_id = self.chat_id,
-                    text = message,
-                    parse_mode = parse_mode  
+                    chat_id=self.chat_id, text=message, parse_mode=parse_mode
                 )
             except NetworkError as network_err:
                 # Sometimes the telegram server resets the current connection,
                 # if this is the case we send the message again.
                 logger.warning(
-                    f'TelegramError: {network_err.message}! Trying one more time.'
+                    f"TelegramError: {network_err.message}! Trying one more time."
                 )
                 self._updater.bot.send_message(
-                    chat_id = self.chat_id,
-                    text = message,
-                    parse_mode = parse_mode 
+                    chat_id=self.chat_id, text=message, parse_mode=parse_mode
                 )
         except TelegramError as telegram_err:
             logger.warning(
-                f'TelegramError: {telegram_err.message}! Giving up on that message.'
+                f"TelegramError: {telegram_err.message}! Giving up on that message."
             )
-

@@ -7,5 +7,5 @@ To launch MyOdds as a module
 
 from myodds import main
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main.main()
